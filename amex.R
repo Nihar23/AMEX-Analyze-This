@@ -182,22 +182,14 @@ normalize <- function(x) {
 
 train_norm=as.data.frame(lapply(train[,37:41],normalize))
 train[,37:41]=train_norm[,1:5]
-leader_norm=leader
 leader_norm=as.data.frame(lapply(leader[,36:40],normalize))
-leader[,36:40]=train_norm
-train_knn=train[1:40000,]
-test_knn=train[40001:60129,]
-train_knn$actual_vote=NULL
-test_knn$actual_vote=NULL
-train.labels=train$actual_vote[1:40000]
-test.labels=train$actual_vote[40001:60129]
+leader[,36:40]=leader_norm
+
 
 #boosting
 library(adabag)
 boosting(actual_vote~major1+major2+major3+major4+major5+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31, train, boos = TRUE, mfinal = 100, coeflearn = 'Breiman')
 a=boosting(actual_vote~major1+major2+major3+major4+major5+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31, train, boos = TRUE, mfinal = 100, coeflearn = 'Breiman')
-pred <- predict.boosting(a,newdata=leader)
-pred <- predict.boosting(a,newdata=leader)
 pred <- predict.boosting(a,newdata=leader)
 pred$class=as.factor(pred$class)
 levels(train$actual_vote)
